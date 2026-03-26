@@ -9,7 +9,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     intel-media-va-driver \
-    libmfx1 \
+    libva2 \
+    libdrm2 \
     vainfo \
     ca-certificates \
     curl \
