@@ -21,10 +21,10 @@ RUN apt-get update \
       dosfstools \
       e2fsprogs \
       ca-certificates \
-    # Optional filesystem helpers vary by Debian release; install when available.
+    # Optional filesystem helpers vary by Debian release; install best-effort.
     && for pkg in exfatprogs exfat-fuse hfsplus hfsprogs; do \
-         if apt-cache show "$pkg" >/dev/null 2>&1; then \
-           apt-get install -y --no-install-recommends "$pkg"; \
+         if apt-get install -y --no-install-recommends "$pkg"; then \
+           echo "[device-watcher] installed optional package: $pkg"; \
          else \
            echo "[device-watcher] optional package not available on this base: $pkg"; \
          fi; \
