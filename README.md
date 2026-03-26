@@ -94,16 +94,23 @@ curl -fsS http://localhost:9000/health
 
 ## Service map
 
-- Frontend: `http://localhost:3000`
-- Backend health: `http://localhost:8000/health`
-- Backend API base: `http://localhost:8000/api/v1`
-- tusd upload endpoint: `http://localhost:1080/files`
-- Whisper health (internal/exposed only if you publish it): `http://localhost:9000/health`
+Everything routes through a single nginx reverse proxy on one port (default **80**).
+
+| Path | Service | Description |
+|------|---------|-------------|
+| `/` | Frontend | Web UI |
+| `/api/` | Backend | FastAPI REST API |
+| `/files/` | tusd | Resumable upload endpoint |
+
+All internal services (postgres, redis, whisper, worker, device-watcher) are **not** exposed to the host — only nginx is.
+
+To change the exposed port, set `APP_PORT` in `.env` (e.g., `APP_PORT=8080`).
 
 ## Notes
 
-- Frontend is built with `VITE_API_URL` and `VITE_TUSD_ENDPOINT` from compose build args.
-- tusd completion webhook points to backend: `/api/v1/upload/tusd/on-complete`.
+- Single-port architecture: browser talks to nginx only; nginx proxies to internal services.
+- tusd completion webhook fires internally to backend (container-to-container).
 - Worker and backend task names are aligned (`tasks.*`) so queued jobs are consumable by the worker.
 - `worker` and `backend` mount `/dev/dri` for Intel QSV.
 - `device-watcher` is privileged by design for USB/SD detection.
+- On Unraid, all containers share a `indygestion-` prefix for easy identification.

@@ -170,26 +170,30 @@ health_checks() {
   [[ "$AUTO_START" == "true" ]] || return 0
 
   log "Running quick health checks"
+  # Read APP_PORT from .env (default 80)
+  local port
+  port="$(grep -oP '^APP_PORT=\K.*' "$INSTALL_DIR/.env" 2>/dev/null || echo 80)"
+
   local ok=0
-  if curl -fsS http://localhost:8000/health >/dev/null 2>&1; then
-    log "backend health: OK"
+  if curl -fsS "http://localhost:${port}/api/health" >/dev/null 2>&1; then
+    log "backend health (via nginx): OK"
     ok=$((ok + 1))
   else
     warn "backend health check failed"
   fi
 
-  if curl -fsS http://localhost:9000/health >/dev/null 2>&1; then
-    log "whisper health: OK"
-    ok=$((ok + 1))
-  else
-    warn "whisper health check failed"
-  fi
-
-  if curl -fsSI http://localhost:1080/files/ >/dev/null 2>&1; then
-    log "tusd endpoint: OK"
+  if curl -fsSI "http://localhost:${port}/files/" >/dev/null 2>&1; then
+    log "tusd endpoint (via nginx): OK"
     ok=$((ok + 1))
   else
     warn "tusd endpoint check failed"
+  fi
+
+  if curl -fsS "http://localhost:${port}/" >/dev/null 2>&1; then
+    log "frontend (via nginx): OK"
+    ok=$((ok + 1))
+  else
+    warn "frontend check failed"
   fi
 
   if [[ "$ok" -lt 2 ]]; then
@@ -206,13 +210,18 @@ main() {
   start_stack
   health_checks
 
+  # Read APP_PORT from .env (default 80)
+  local port
+  port="$(grep -oP '^APP_PORT=\K.*' "$INSTALL_DIR/.env" 2>/dev/null || echo 80)"
+
   log "Done."
   echo
   echo "Install dir : $INSTALL_DIR"
   echo "Media root  : $MEDIA_ROOT_HOST"
-  echo "Frontend    : http://localhost:3000"
-  echo "Backend API : http://localhost:8000/api/v1"
-  echo "Upload tusd : http://localhost:1080/files"
+  echo "App URL     : http://localhost:${port}"
+  echo "  UI        : http://localhost:${port}/"
+  echo "  API       : http://localhost:${port}/api/v1"
+  echo "  Uploads   : http://localhost:${port}/files/"
 }
 
 main "$@"
