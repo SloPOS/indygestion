@@ -95,17 +95,17 @@ services:
     container_name: indygestion-tusd
     restart: *default-restart
     command:
+      - -port=8080
       - -upload-dir=/data/uploads
       - -hooks-http=http://backend:8000/api/v1/upload/tusd/on-complete
       - -hooks-http-forward-headers=Authorization,Cookie,X-Request-Id,Tus-Resumable,Upload-Metadata
       - -hooks-enabled-events=post-finish
       - -behind-proxy
-      - -base-path=/files
-      - -max-size=${TUSD_MAX_SIZE}
+      - -base-path=/files/
     environment:
       TUSD_HOOKS_HTTP_HEADER_Authorization: "Bearer ${TUSD_WEBHOOK_SECRET}"
     expose:
-      - "1080"
+      - "8080"
     volumes:
       - ${MEDIA_ROOT_HOST}/staging:/data/uploads
       - tusd-data:/data/tusd
