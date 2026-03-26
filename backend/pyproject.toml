@@ -1,0 +1,29 @@
+[project]
+name = "indygestion-backend"
+version = "0.1.0"
+description = "FastAPI backend for Indygestion"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.8",
+  "uvicorn[standard]==0.34.0",
+  "sqlalchemy==2.0.38",
+  "asyncpg==0.30.0",
+  "alembic==1.14.1",
+  "psycopg2-binary==2.9.10",
+  "pgvector==0.3.6",
+  "pydantic==2.10.6",
+  "pydantic-settings==2.7.1",
+  "python-multipart==0.0.20",
+  "celery==5.4.0",
+  "redis==5.2.1",
+  "httpx==0.28.1",
+  "orjson==3.10.15",
+  "python-dotenv==1.0.1",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["app"]

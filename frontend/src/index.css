@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #e2e8f0;
+  background: #1a1a2e;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; background: radial-gradient(circle at top right, #16213e, #1a1a2e 45%); }
+
+.field { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.86rem; color: #cbd5e1; }
+.field input, .field select {
+  border-radius: 0.55rem;
+  border: 1px solid #2a3a61;
+  background: #101a33;
+  color: #e2e8f0;
+  padding: 0.55rem 0.7rem;
+}
+.field input[type='checkbox'] { width: 18px; height: 18px; }

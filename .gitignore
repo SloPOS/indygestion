@@ -1,0 +1,14 @@
+.env
+.local-media/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+.DS_Store
+node_modules/
+frontend/dist/
+backend/.venv/
+worker/.venv/
+whisper/.venv/

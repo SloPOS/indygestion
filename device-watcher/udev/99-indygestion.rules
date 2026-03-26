@@ -1,0 +1,13 @@
+# Indygestion reference udev rules for camera SD/USB media detection.
+#
+# In containerized environments, rules are usually managed by the host OS.
+# This file is documentation/reference for host-level setup if desired.
+
+# Tag removable block partitions so they are easy to identify in logs/filters.
+ACTION=="add|change", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ATTRS{removable}=="1", ENV{ID_INDYGESTION_CANDIDATE}="1"
+
+# Handle common USB reader paths.
+ACTION=="add|change", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_BUS}=="usb", ENV{ID_INDYGESTION_CANDIDATE}="1"
+
+# Optional: trigger helper script (host-side) when device appears.
+# ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_INDYGESTION_CANDIDATE}=="1", RUN+="/usr/local/bin/indygestion-device-hook %E{DEVNAME}"

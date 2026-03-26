@@ -1,0 +1,14 @@
+export type ProjectStatus = 'active' | 'review' | 'finished' | 'archiving' | 'archived';
+export type ProxyStatus = 'pending' | 'processing' | 'ready' | 'failed';
+export type IngestStatus = 'uploading' | 'staged' | 'transcribing' | 'reviewing' | 'assigned' | 'archived';
+export type JobStatus = 'queued' | 'running' | 'completed' | 'failed' | 'cancelled';
+export interface SimilarityMatch { clipId: string; score: number; reason: string; }
+export interface Clip { id: string; projectId?: string | null; filename: string; originalPath: string; fileSize: number; duration: number; resolution: string; codec: string; fps: number; bitrate: number; thumbnailUrl?: string; proxyPath?: string; proxyStatus: ProxyStatus; transcriptText?: string; transcriptJsonPath?: string; checksumSha256?: string; source: 'web_upload' | 'usb_ingest' | 'sd_ingest'; sourceDevice?: string; ingestSessionId?: string; ingestStatus: IngestStatus; similarityMatches?: SimilarityMatch[]; createdAt: string; updatedAt: string; }
+export interface Project { id: string; name: string; description?: string; status: ProjectStatus; createdAt: string; updatedAt: string; archivedAt?: string; folderPath: string; archivePath?: string; tags: string[]; notes?: string; estimatedArchiveSize?: number; clipCount: number; totalSize: number; thumbnailUrl?: string; }
+export interface IngestJob { id: string; clipId: string; jobType: 'proxy' | 'transcribe' | 'embed' | 'archive'; status: JobStatus; progress: number; errorMessage?: string; startedAt?: string; completedAt?: string; workerId?: string; }
+export interface FileOperation { id: string; clipId?: string; operation: 'move' | 'copy' | 'delete' | 'archive'; sourcePath: string; destPath?: string; performedAt: string; reversibleUntil: string; undone: boolean; }
+export interface Device { id: string; label: string; serial?: string; capacityBytes: number; usedBytes: number; detectedAt: string; status: 'connected' | 'scanning' | 'ready' | 'ingesting' | 'safe_to_remove'; fileCount: number; totalVideoBytes: number; }
+export interface StorageStats { totalBytes: number; activeBytes: number; archiveBytes: number; stagingBytes: number; }
+export interface CodecEstimate { preset: string; codec: string; quality: string; estimatedSize: number; spaceSaved: number; rating: number; }
+export interface AppSettings { networkSpeed: '1GbE' | '2.5GbE' | '5GbE' | '10GbE' | 'custom'; uploadChunkSizeMb: number; maxConcurrentUploads: number; whisperModel: 'tiny' | 'base' | 'small' | 'medium'; similarityThreshold: number; crossSessionWindowDays: number; defaultArchivePreset: string; autoIngest: boolean; videoExtensions: string; minFileSizeMb: number; storageActive: string; storageArchive: string; storageStaging: string; uploadThrottleMbps: number; }
+export interface ReviewGroup { id: string; title: string; confidence: number; why: string; targetProjectId?: string; clips: Clip[]; }
