@@ -12,18 +12,23 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    rsync \
-    exfat-fuse \
-    exfatprogs \
-    ntfs-3g \
-    hfsplus \
-    hfsprogs \
-    udev \
-    util-linux \
-    dosfstools \
-    e2fsprogs \
-    ca-certificates \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      rsync \
+      ntfs-3g \
+      udev \
+      util-linux \
+      dosfstools \
+      e2fsprogs \
+      ca-certificates \
+    # Optional filesystem helpers vary by Debian release; install when available.
+    && for pkg in exfatprogs exfat-fuse hfsplus hfsprogs; do \
+         if apt-cache show "$pkg" >/dev/null 2>&1; then \
+           apt-get install -y --no-install-recommends "$pkg"; \
+         else \
+           echo "[device-watcher] optional package not available on this base: $pkg"; \
+         fi; \
+       done \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
