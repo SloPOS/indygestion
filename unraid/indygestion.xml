@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Indygestion</Name>
+  <Repository>ghcr.io/slopos/indygestion:latest</Repository>
+  <Registry>https://github.com/SloPOS/indygestion/pkgs/container/indygestion</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/SloPOS/indygestion/issues</Support>
+  <Project>https://github.com/SloPOS/indygestion</Project>
+  <Overview>
+Indygestion — Self-hosted video asset management for YouTube creators.
+
+Features:
+- Resumable large-file uploads (tus protocol)
+- Whisper-powered transcription and smart clip grouping
+- Automatic proxy generation (Intel QSV accelerated)
+- Archive compression with codec/quality selection
+- USB/SD card auto-ingest
+- Single web UI on one port
+
+IMPORTANT: This is a multi-container app (8 services). For the best experience:
+
+Option A (Recommended): Install via Docker Compose Manager plugin:
+1. Install "Docker Compose Manager" from Community Applications
+2. Add a new compose stack pointing to: https://github.com/SloPOS/indygestion
+3. Configure .env and start the stack
+
+Option B: SSH bootstrap script:
+  bash &lt;(curl -fsSL https://raw.githubusercontent.com/SloPOS/indygestion/main/scripts/bootstrap-unraid.sh)
+
+Full docs: https://github.com/SloPOS/indygestion
+  </Overview>
+  <Category>Productivity: MediaApp:Video</Category>
+  <WebUI>http://[IP]:[PORT:4708]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/SloPOS/indygestion/main/unraid/indygestion.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/SloPOS/indygestion/main/unraid/indygestion-icon.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>Docker Compose Manager plugin (recommended). Intel iGPU for QSV hardware transcoding (optional).</Requires>
+  <Config Name="Web UI Port" Target="4708" Default="4708" Mode="tcp" Description="Port for the Indygestion web interface. All services (UI, API, uploads) are served through this single port via nginx." Type="Port" Display="always" Required="true" Mask="false">4708</Config>
+  <Config Name="Media Storage" Target="/mnt/user/indygestion" Default="/mnt/user/indygestion" Mode="rw" Description="Unraid share for video storage (projects, staging, archive). Will be created automatically." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/indygestion</Config>
+  <Config Name="App Data" Target="/mnt/user/appdata/indygestion" Default="/mnt/user/appdata/indygestion" Mode="rw" Description="Application data (database, config, model cache)." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/indygestion</Config>
+  <Config Name="Postgres Password" Target="POSTGRES_PASSWORD" Default="" Mode="" Description="Database password. Set a strong password on first install." Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="Webhook Secret" Target="TUSD_WEBHOOK_SECRET" Default="" Mode="" Description="Internal webhook secret. Set any random string." Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="Whisper Model" Target="WHISPER_MODEL" Default="small" Mode="" Description="Whisper transcription model: tiny (fastest), base, small (recommended), medium (most accurate, slowest)" Type="Variable" Display="advanced" Required="false" Mask="false">small</Config>
+  <Config Name="Auto Ingest" Target="AUTO_INGEST" Default="false" Mode="" Description="Automatically ingest video files from USB/SD devices without confirmation" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Video Extensions" Target="VIDEO_EXTENSIONS" Default=".mov,.mp4,.mxf,.avi,.braw,.mkv,.mts" Mode="" Description="File extensions to scan for during ingest" Type="Variable" Display="advanced" Required="false" Mask="false">.mov,.mp4,.mxf,.avi,.braw,.mkv,.mts</Config>
+</Container>
