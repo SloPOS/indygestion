@@ -14,17 +14,29 @@ Self-hosted video ingest stack (React + FastAPI + Celery + Whisper + tusd) for l
 
 ## Quickstart (works now)
 
-### Option A) One-command Unraid install script
+### Option A) Pull + run Unraid install script (direct)
+
+If the repo is public:
 
 ```bash
-chmod +x scripts/install-unraid.sh
-./scripts/install-unraid.sh
+curl -fsSL https://raw.githubusercontent.com/SloPOS/indygestion/main/scripts/install-unraid.sh -o install-unraid.sh
+chmod +x install-unraid.sh
+./install-unraid.sh
 ```
 
 Optional override:
 
 ```bash
-MEDIA_ROOT_HOST=/mnt/user/indygestion ./scripts/install-unraid.sh
+MEDIA_ROOT_HOST=/mnt/user/indygestion ./install-unraid.sh
+```
+
+If the repo is private, clone first and run locally:
+
+```bash
+git clone https://github.com/SloPOS/indygestion.git
+cd indygestion
+chmod +x scripts/install-unraid.sh
+./scripts/install-unraid.sh
 ```
 
 ### Option B) Manual install
