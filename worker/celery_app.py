@@ -1,4 +1,8 @@
 import os
+import sys
+
+# Ensure /app is on the Python path so 'tasks' and 'utils' are importable
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from celery import Celery
 
@@ -9,6 +13,14 @@ celery_app = Celery(
     "indygestion-worker",
     broker=CELERY_BROKER_URL,
     backend=CELERY_RESULT_BACKEND,
+    include=[
+        "tasks.proxy",
+        "tasks.transcribe",
+        "tasks.embed",
+        "tasks.cluster",
+        "tasks.archive",
+        "tasks.pipeline",
+    ],
 )
 
 celery_app.conf.update(
@@ -23,5 +35,3 @@ celery_app.conf.update(
     task_time_limit=60 * 60 * 8,
     task_soft_time_limit=60 * 60 * 7,
 )
-
-celery_app.autodiscover_tasks(["tasks"])
