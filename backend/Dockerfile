@@ -24,6 +24,7 @@ RUN pip install --upgrade pip setuptools wheel && \
       pydantic-settings==2.7.0 \
       psycopg[binary]==3.2.3 \
       asyncpg==0.30.0 \
+      pgvector==0.3.6 \
       redis==5.2.1 \
       python-multipart==0.0.20 \
       httpx==0.28.1
