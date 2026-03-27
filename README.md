@@ -69,8 +69,8 @@ Minimum values to review:
 - `POSTGRES_PASSWORD`
 - `TUSD_WEBHOOK_SECRET`
 - `MEDIA_ROOT_HOST`
-- `API_BASE_URL` (used at frontend build time, default `http://localhost:8000`)
-- `TUSD_ENDPOINT` (frontend tus target, default `http://localhost:1080/files`)
+- `MACVLAN_PARENT`, `MACVLAN_SUBNET`, `MACVLAN_GATEWAY`
+- `APP_IP` (dedicated nginx LAN IP on macvlan)
 
 ### 3) Validate compose
 
@@ -94,7 +94,9 @@ curl -fsS http://localhost:9000/health
 
 ## Service map
 
-Everything routes through a single nginx reverse proxy on one port (default **80**).
+Everything routes through a single nginx reverse proxy on port **80**.
+
+On Unraid, nginx can be attached directly to `br0` with its own dedicated LAN IP via Docker macvlan (default `192.168.86.85`).
 
 | Path | Service | Description |
 |------|---------|-------------|
@@ -102,9 +104,9 @@ Everything routes through a single nginx reverse proxy on one port (default **80
 | `/api/` | Backend | FastAPI REST API |
 | `/files/` | tusd | Resumable upload endpoint |
 
-All internal services (postgres, redis, whisper, worker, device-watcher) are **not** exposed to the host — only nginx is.
+All internal services (postgres, redis, whisper, worker, device-watcher) are **not** exposed to the host — only nginx is reachable on its dedicated macvlan IP.
 
-To change the exposed port, set `APP_PORT` in `.env` (e.g., `APP_PORT=8080`).
+To change where nginx is reachable on your LAN, set `APP_IP` in `.env` (and adjust `MACVLAN_*` values if your Unraid network differs).
 
 ## Notes
 
