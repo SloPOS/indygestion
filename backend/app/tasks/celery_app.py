@@ -9,12 +9,8 @@ celery_app = Celery(
     backend=settings.celery_result_backend,
 )
 
-celery_app.conf.task_routes = {
-    "tasks.transcribe.transcribe_clip": {"queue": "transcribe"},
-    "tasks.proxy.generate_proxy": {"queue": "proxy"},
-    "tasks.embed.embed_clip": {"queue": "embed"},
-    "tasks.archive.archive_project": {"queue": "archive"},
-}
+# All tasks use the default 'celery' queue for simplicity.
+# The worker consumes from this queue automatically.
 
 
 @celery_app.task(name="tasks.transcribe.transcribe_clip")
