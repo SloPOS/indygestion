@@ -12,16 +12,8 @@ networks:
   indygestion-net:
     name: indygestion-net
     driver: bridge
-  indygestion-br0:
-    name: indygestion-br0
-    driver: macvlan
-    external: false
-    driver_opts:
-      parent: ${MACVLAN_PARENT:-br0}
-    ipam:
-      config:
-        - subnet: ${MACVLAN_SUBNET:-192.168.86.0/24}
-          gateway: ${MACVLAN_GATEWAY:-192.168.86.1}
+  br0:
+    external: true
 
 volumes:
   postgres-data:
@@ -43,7 +35,7 @@ services:
       - tusd
     networks:
       indygestion-net: {}
-      indygestion-br0:
+      br0:
         ipv4_address: ${APP_IP:-192.168.86.85}
     logging: *default-logging
     mem_limit: 256m
