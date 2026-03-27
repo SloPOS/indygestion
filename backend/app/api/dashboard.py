@@ -21,15 +21,32 @@ def _dir_size(path: str) -> int:
     return sum(f.stat().st_size for f in p.rglob("*") if f.is_file())
 
 
+def _storage_snapshot() -> dict:
+    settings = get_settings()
+    projects_bytes = _dir_size(settings.storage_active_path)
+    archive_bytes = _dir_size(settings.storage_archive_path)
+    staging_bytes = _dir_size(settings.storage_staging_path)
+    total_bytes = projects_bytes + archive_bytes + staging_bytes
+    return {
+        "projects_bytes": projects_bytes,
+        "archive_bytes": archive_bytes,
+        "staging_bytes": staging_bytes,
+        # frontend compatibility keys
+        "activeBytes": projects_bytes,
+        "archiveBytes": archive_bytes,
+        "stagingBytes": staging_bytes,
+        "totalBytes": total_bytes,
+    }
+
+
+@router.get("/storage")
+async def dashboard_storage():
+    return _storage_snapshot()
+
+
 @router.get("/stats")
 async def dashboard_stats(db: AsyncSession = Depends(get_db)):
-    settings = get_settings()
-
-    storage = {
-        "projects_bytes": _dir_size(settings.storage_active_path),
-        "archive_bytes": _dir_size(settings.storage_archive_path),
-        "staging_bytes": _dir_size(settings.storage_staging_path),
-    }
+    storage = _storage_snapshot()
 
     active_jobs = (
         await db.scalars(select(IngestJob).where(IngestJob.status.in_([JobStatus.queued, JobStatus.running])))
